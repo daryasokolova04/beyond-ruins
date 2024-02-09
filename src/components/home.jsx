@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom/cjs/react-router-dom";
+import { useParams } from "react-router-dom";
 import UserPage from "./userPage";
 import AddPost from "./addPost";
 import { v4 as uuidv4 } from "uuid";
@@ -8,7 +8,6 @@ import EditPost from "./editPost";
 
 const Home = () => {
   const params = useParams();
-
   const id = params.id;
   const action = params.action;
 

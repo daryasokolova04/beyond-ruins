@@ -5,7 +5,6 @@ const TextField = ({ type, label, name, value, onChange, error }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = ({ target }) => {
-    console.log(target.name, target.value);
     onChange({ name: target.name, value: target.value });
   };
 
@@ -30,7 +29,7 @@ const TextField = ({ type, label, name, value, onChange, error }) => {
           defaultValue={value}
           onChange={handleChange}
           name={name}
-          //   required
+          required
         />
         {type === "password" && (
           <button

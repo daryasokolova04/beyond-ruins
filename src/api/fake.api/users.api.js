@@ -72,6 +72,53 @@ const comments = [
   },
 ];
 
+// const user = [
+//   {
+//     userId: "",
+//     login: "",
+//     email: "",
+//     password: "",
+//     gender: "",
+//     license: true,
+//     registrationDate: "",
+//   },
+// ];
+
+// const comments = [
+//   {
+//     commentId: "",
+//     postId: "",
+//     userId: "",
+//     commentText: "",
+//     creationTime: "",
+//   },
+// ];
+
+// const posts = [
+//   {
+//     postId: "",
+//     userId: "",
+//     categoryId: "",
+//     title: "",
+//     text: "",
+//     creationTime: "",
+//   },
+// ];
+
+// const categories = [
+// 	{
+// 	categoryId: "",
+// 	name: "",
+// 	color: ""
+// 	},
+// ];
+
+let isLogged = "";
+
+if (!localStorage.getItem("isLogged")) {
+  localStorage.setItem("isLogged", JSON.stringify(isLogged));
+}
+
 if (!localStorage.getItem("data")) {
   localStorage.setItem("data", JSON.stringify(data));
 }
@@ -87,6 +134,21 @@ if (!localStorage.getItem("categories")) {
 if (!localStorage.getItem("comments")) {
   localStorage.setItem("comments", JSON.stringify(comments));
 }
+
+const getIsLogged = () =>
+  new Promise((resolve) => {
+    window.setTimeout(function () {
+      resolve(JSON.parse(localStorage.getItem("isLogged")));
+    }, 0);
+  });
+
+const setIsLogged = (param) =>
+  new Promise((resolve) => {
+    let isLogged = JSON.parse(localStorage.getItem("isLogged"));
+    isLogged = param;
+    localStorage.setItem("isLogged", JSON.stringify(isLogged));
+    resolve((data) => console.log(data));
+  });
 
 const fetchAllUsers = () =>
   new Promise((resolve) => {
@@ -184,6 +246,18 @@ const deletePost = (postId) =>
     localStorage.setItem("posts", JSON.stringify(updatedPosts));
   });
 
+const deleteComment = (commentId) =>
+  new Promise(() => {
+    const comments = JSON.parse(localStorage.getItem("comments"));
+    console.log(comments);
+    const updatedComments =
+      comments.filter((comment) => {
+        return comment.commentId !== commentId;
+      }) || [];
+    console.log(updatedComments);
+    localStorage.setItem("comments", JSON.stringify(updatedComments));
+  });
+
 const update = (id, data) =>
   new Promise((resolve) => {
     const posts = JSON.parse(localStorage.getItem("posts"));
@@ -207,4 +281,7 @@ export default {
   getCategoryById,
   getCommentsByPostId,
   addComment,
+  deleteComment,
+  getIsLogged,
+  setIsLogged,
 };

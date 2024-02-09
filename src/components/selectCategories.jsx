@@ -4,24 +4,11 @@ import api from "../api/fake.api/users.api";
 import { useState } from "react";
 
 const SelectCategories = ({ defaultValue, label, onChange, options, name }) => {
-  //   const [categories, setCategories] = useState();
-
-  //   useEffect(() => {
-  //     let isMounted = true;
-  //     api.fetchAllCategories().then((data) => {
-  //       setCategories(data);
-  //     });
-  //     return () => {
-  //       isMounted = false;
-  //     };
-  //   }, []);
-
   const handleChange = ({ target }) => {
     console.log(target.name, target.value);
     onChange({ name: target.name, value: target.value });
   };
-
-  //   console.log(categories);
+  console.log(options);
 
   return (
     <div className="mb-4">

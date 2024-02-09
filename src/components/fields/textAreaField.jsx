@@ -5,6 +5,10 @@ const TextAreaField = ({ label, name, value, onChange, error }) => {
     onChange({ name: target.name, value: target.value });
   };
 
+  const renderClass = () => {
+    return "form-control" + (error ? " is-invalid" : "");
+  };
+
   return (
     <div className="mb-4">
       <label htmlFor="textArea" className="form-label">
@@ -13,11 +17,12 @@ const TextAreaField = ({ label, name, value, onChange, error }) => {
       <textarea
         name={name}
         defaultValue={value}
-        className="form-control"
+        className={renderClass()}
         id="textArea"
         rows="5"
         onChange={handleChange}
       ></textarea>
+      {error && <div className="invalid-feedback">{error}</div>}
     </div>
   );
 };

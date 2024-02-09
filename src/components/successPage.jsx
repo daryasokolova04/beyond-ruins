@@ -1,10 +1,10 @@
 import React from "react";
-import { useHistory } from "react-router-dom/cjs/react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const SuccessPage = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const handleClick = () => {
-    history.replace("/login");
+    navigate("/login", { replace: true });
   };
 
   return (

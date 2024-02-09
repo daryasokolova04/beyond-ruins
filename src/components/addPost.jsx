@@ -4,8 +4,10 @@ import { useState } from "react";
 import TextAreaField from "./fields/textAreaField";
 import { useEffect } from "react";
 import api from "../api/fake.api/users.api";
-import { useHistory } from "react-router-dom/cjs/react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SelectCategories from "./selectCategories";
+import axios from "axios";
+import { validator } from "../utils/validator";
 
 const AddPost = ({ postId, userId }) => {
   const [post, setPost] = useState({
@@ -15,9 +17,9 @@ const AddPost = ({ postId, userId }) => {
     title: "",
     text: "",
   });
-  const [categories, setCategories] = useState();
-  //   console.log(post);
-  const history = useHistory();
+  const [categories, setCategories] = useState([]);
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     let isMounted = true;
@@ -37,9 +39,41 @@ const AddPost = ({ postId, userId }) => {
   };
 
   const handleClick = () => {
+    // axios
+    //   .post("http://127.0.0.1:8000/api/v1/Article/", {
+    //     id: 2,
+    //     title: "Россия",
+    //     main_text: "о России",
+    //     user_id: 1,
+    //     category_id: 1,
+    //   })
+    //   .then((data) => console.log(data));
     api.addPost(post);
-    history.replace(`/home/${userId}`);
+    navigate(`/home/${userId}`, { replace: true });
   };
+
+  const validate = () => {
+    const errors = validator(post, validatorConfig);
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  useEffect(() => {
+    validate();
+  }, [post]);
+
+  const isValid = Object.keys(errors).length === 0;
+
+  const validatorConfig = {
+    title: {
+      isRequired: { message: "Поле обязательно для заполнения" },
+    },
+    text: {
+      isRequired: { message: "Поле обязательно для заполнения" },
+    },
+  };
+
+  console.log(categories);
 
   return categories ? (
     <div className="m-4">
@@ -51,6 +85,7 @@ const AddPost = ({ postId, userId }) => {
           name="title"
           value={post.title}
           onChange={handleChange}
+          error={errors.title}
         />
         <SelectCategories
           defaultValue={post.categoryId}
@@ -64,6 +99,7 @@ const AddPost = ({ postId, userId }) => {
           name="text"
           value={post.text}
           onChange={handleChange}
+          error={errors.text}
         />
         <button
           onClick={handleClick}

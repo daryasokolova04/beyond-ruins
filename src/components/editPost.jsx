@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-
 import api from "../api/fake.api/users.api";
 import TextField from "./fields/textField";
 import TextAreaField from "./fields/textAreaField";
-import { useHistory } from "react-router-dom/cjs/react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SelectCategories from "./selectCategories";
+import { validator } from "../utils/validator";
 
 const EditPost = ({ id }) => {
   const [post, setPost] = useState({
@@ -15,7 +15,8 @@ const EditPost = ({ id }) => {
     text: "",
   });
   const [categories, setCategories] = useState();
-  const history = useHistory();
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     let isMounted = true;
@@ -37,8 +38,6 @@ const EditPost = ({ id }) => {
     };
   }, []);
 
-  //   console.log(post);
-
   const handleChange = (target) => {
     setPost((prevState) => ({
       ...prevState,
@@ -47,12 +46,31 @@ const EditPost = ({ id }) => {
   };
 
   const handleClick = () => {
-    api.update(id, post).then(() => history.replace(`/home/${post.userId}`));
+    api
+      .update(id, post)
+      .then(() => navigate(`/home/${post.userId}`, { replace: true }));
   };
 
-  //   const prevCategory = categories.map((category) => {
-  //     if (category.id === post.id) return category.name;
-  //   });
+  const validate = () => {
+    const errors = validator(post, validatorConfig);
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  useEffect(() => {
+    validate();
+  }, [post]);
+
+  const isValid = Object.keys(errors).length === 0;
+
+  const validatorConfig = {
+    title: {
+      isRequired: { message: "Поле обязательно для заполнения" },
+    },
+    text: {
+      isRequired: { message: "Поле обязательно для заполнения" },
+    },
+  };
 
   return post && categories ? (
     <div className="m-4">
@@ -64,6 +82,7 @@ const EditPost = ({ id }) => {
           name="title"
           value={post.title}
           onChange={handleChange}
+          error={errors.title}
         />
         <SelectCategories
           defaultValue={post.categoryId}
@@ -77,12 +96,13 @@ const EditPost = ({ id }) => {
           name="text"
           value={post.text}
           onChange={handleChange}
+          error={errors.text}
         />
         <button
           onClick={handleClick}
           type="submit"
           className="btn btn-primary mt-2 mb-2"
-          //   disabled={!isValid}
+          disabled={!isValid}
         >
           Сохранить изменения
         </button>
