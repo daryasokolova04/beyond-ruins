@@ -2,23 +2,23 @@ import React, { useEffect, useState, useContext } from "react";
 import api from "../api/fake.api/users.api";
 import { useNavigate } from "react-router-dom";
 import CommentForm from "./commentForm";
-import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
+import { setAuthToken } from "./setAuthToken";
+import { refreshToken } from "../services/refresh";
 
 const PostCard = ({ postId }) => {
-  const [isLogged, setIsLogged] = useState();
+  const isLogged = +localStorage.getItem("id");
   const navigate = useNavigate();
   const [post, setPost] = useState();
-  const [categories, setCategories] = useState();
+  const [category, setCategory] = useState();
   const [comments, setComments] = useState();
-  const [newComments, setNewComments] = useState();
-  const [users, setUsers] = useState();
 
   useEffect(() => {
     let isMounted = true;
-    api.getPostById(postId).then((data) => {
-      setPost(data);
-    });
+    axios
+      .get(`http://127.0.0.1:8000/api/v1/Posts/${postId}/`)
+      .then((data) => setPost(data.data))
+      .catch((err) => console.log(err));
     console.log(post);
     return () => {
       isMounted = false;
@@ -27,7 +27,10 @@ const PostCard = ({ postId }) => {
 
   useEffect(() => {
     let isMounted = true;
-    api.getIsLogged().then((data) => setIsLogged(data));
+    axios
+      .get(`http://127.0.0.1:8000/api/v1/Posts/${postId}/category/`)
+      .then((data) => setCategory(data.data))
+      .catch((err) => console.log(err));
     return () => {
       isMounted = false;
     };
@@ -35,121 +38,106 @@ const PostCard = ({ postId }) => {
 
   useEffect(() => {
     let isMounted = true;
-    api.fetchAllCategories().then((data) => {
-      setCategories(data);
-    });
+    axios
+      .get(`http://127.0.0.1:8000/api/v1/Posts/${postId}/comments/`)
+      .then((data) => setComments(data.data || null))
+      .catch((err) => console.log(err));
     return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    let isMounted = true;
-    api.fetchAllUsers().then((data) => {
-      setUsers(data);
-    });
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    let isMounted = true;
-    api.getCommentsByPostId(postId).then((data) => {
-      setComments(data);
-    });
-    // axios
-    //   .get(`http://127.0.0.1:8000/api/v1/Posts/${"1"}/comments/`)
-    //   .then((data) => console.log(data.data))
-    //   .catch((err) => console.log(err));
-    // console.log(comments);
-    return () => {
+      console.log(comments);
       isMounted = false;
     };
   }, []);
 
   const handleEdit = () => {
+    console.log(postId);
     navigate(`/home/${postId}/edit`);
   };
 
   const getCategoryBadge = (item) => {
     return (
-      <span className={"badge bg-" + item.color} key={item.id}>
+      <span
+        className={"badge"}
+        style={{ backgroundColor: "#555a24" }}
+        key={post.id}
+      >
         {item.name}
       </span>
     );
   };
 
-  //   const setUserName = (userId) => {
-  //     api.getUserById(userId).then((data) => {
-  //       setUser(data);
-  //     });
-  //     return user;
-  //   };
-
-  const getComments = (comment) => {
-    const user = users.find((user) => user.id === comment.userId);
-    return (
-      <div key={comment.commentId} className="m-2">
-        <p>{user.name + " " + user.surname}</p>
-        <p>{comment.commentText}</p>
-        {isLogged && comment.userId === isLogged && (
+  const getComments = () => {
+    return Object.keys(comments).map((key) => (
+      <div key={`${comments[key].creationTime}_${comments[key].commentText}`}>
+        <p style={{ fontStyle: "italic" }}>
+          {comments[key].username}: {comments[key].commentText}
+        </p>
+        {comments[key].userId === isLogged && (
           <button
             type="button"
-            onClick={() => handleCommentDelete(comment.commentId)}
-            className="btn btn-danger m-2"
+            onClick={() => handleCommentDelete(Number(key))}
+            className="btn m-2 btn-sm btn-outline-danger"
           >
             Удалить
           </button>
         )}
       </div>
-    );
+    ));
   };
 
   const handlePostDelete = (id) => {
-    api.deletePost(id);
+    refreshToken();
+    console.log(axios.defaults.headers);
+    axios
+      .delete(`http://127.0.0.1:8000/api/v1/Posts/${id}/`)
+      .then((response) => console.log(response.data))
+      .catch((err) => console.log(err));
+
     document.location.reload();
   };
 
   const handleCommentDelete = (id) => {
-    api.deleteComment(id);
+    refreshToken();
+    console.log(axios.defaults.headers);
+    axios
+      .delete(`http://127.0.0.1:8000/api/v1/comments/${id}/`)
+      .then((response) => console.log(response.data))
+      .catch((err) => console.log(err));
+
     document.location.reload();
   };
 
-  return post && categories && comments ? (
-    <div className="mb-2">
-      <div className="">
-        {categories.map((category) => {
-          if (category.id === post.categoryId) {
-            return getCategoryBadge(category);
-          }
-        })}
-      </div>
-      <div className="">
-        <h2 className="">{post.title}</h2>
-        <p className="">{post.text}</p>
+  return post && category ? (
+    <div className="p-4">
+      <div>{getCategoryBadge(category)}</div>
+      <div>
+        <h2 className="card-title">{post.title}</h2>
+        <p className="card-text">{post.text}</p>
 
-        {isLogged && post.userId === isLogged && (
-          <>
-            <button onClick={handleEdit} className="btn btn-success m-2">
-              Редактировать пост
-            </button>
-            <button
-              type="button"
-              onClick={() => handlePostDelete(post.id)}
-              className="btn btn-danger m-2"
-            >
-              Удалить
-            </button>
-          </>
+        {post.userId === isLogged && (
+          <div className="group-button">
+            <div className="d-grid d-md-flex justify-content-md-end">
+              <button
+                onClick={handleEdit}
+                className="btn btn-outline-dark m-2 btn-sm"
+              >
+                Редактировать пост
+              </button>
+              <button
+                type="button"
+                onClick={() => handlePostDelete(post.id)}
+                className="btn m-2 btn-sm btn-outline-danger"
+              >
+                Удалить
+              </button>
+            </div>
+          </div>
         )}
         {comments && (
-          <>
-            <p>Комментарии</p> {comments.map((comment) => getComments(comment))}
-          </>
+          <div className="card-footer">
+            <p>Комментарии</p> {getComments()}
+          </div>
         )}
       </div>
-      {/* <CommentForm commentId={uuidv4()} postId={post.id} userId="1" /> */}
     </div>
   ) : (
     ""

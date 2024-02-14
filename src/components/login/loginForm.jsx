@@ -1,39 +1,25 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect } from "react";
 import TextField from "../fields/textField";
 import api from "../../api/index";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../../App";
+import axios from "axios";
+import { setAuthToken } from "../setAuthToken";
+import inMemoryJWT from "../../services/inMemoryJWT";
+import { refreshToken } from "../../services/refresh";
 
 const LoginForm = () => {
-  //   const isLogged = useContext(UserContext);
-
+  const navigate = useNavigate();
   const [isLogged, setIsLogged] = useState();
-  const [success, setSuccess] = useState(false);
   const [users, setUsers] = useState();
   const [data, setData] = useState({
-    email: "",
+    login: "",
     password: "",
   });
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     let isMounted = true;
     api.data.getIsLogged().then((data) => setIsLogged(data));
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  const handleLogin = (id) => {
-    api.data.setIsLogged(id).then((data) => console.log(data));
-  };
-  console.log(isLogged);
-
-  useEffect(() => {
-    let isMounted = true;
-    api.data.fetchAllUsers().then((data) => setUsers(data));
     return () => {
       isMounted = false;
     };
@@ -48,18 +34,42 @@ const LoginForm = () => {
   };
 
   const handleSubmit = async (e) => {
-    setSuccess(true);
     e.preventDefault();
-    console.log(users);
-    console.log(data);
+    let id = null;
 
-    const registeredUser = users.find((user) => {
-      return user.email === data.email && user.password === data.password;
-    });
-    if (registeredUser) {
-      navigate(`/profile/${registeredUser.id}`, { replace: true });
-      handleLogin(registeredUser.id);
+    try {
+      // Kskjfkm42
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/v1/token/",
+        {
+          username: data.login,
+          password: data.password,
+        },
+        { credentials: "include" }
+      );
+
+      console.log(axios.defaults.headers);
+      localStorage.setItem("refresh", response.data.refresh);
+      localStorage.setItem("access", response.data.access);
+      refreshToken();
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${response.data.access}`;
+
+      const user = await axios.get(
+        "http://127.0.0.1:8000/api/v1/User/profile/"
+      );
+
+      id = user.data;
+      localStorage.setItem("id", id);
+    } catch (error) {
+      console.log(error);
+    }
+
+    if (id) {
+      navigate(`/profile/${localStorage.getItem("id")}`, { replace: true });
       document.location.reload();
+      refreshToken();
     } else {
       console.log("user not found");
     }
@@ -73,10 +83,10 @@ const LoginForm = () => {
             <h1>Login Form</h1>
             <TextField
               type="text"
-              label="Email"
-              name="email"
+              label="Логин"
+              name="login"
               onChange={handleChange}
-              value={data.email}
+              value={data.login}
             />
 
             <TextField
@@ -88,11 +98,7 @@ const LoginForm = () => {
             />
 
             <div className="col-12">
-              <button
-                // onClick={handleClick}
-                // type="submit"
-                className="btn btn-primary mt-2 mb-2"
-              >
+              <button className="btn m-2 btn-sm btn-outline-dark">
                 Sign in
               </button>
             </div>

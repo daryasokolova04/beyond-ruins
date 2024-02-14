@@ -1,4 +1,5 @@
 import React, { useContext, useState, createContext } from "react";
+import { useEffect } from "react";
 import NavBar from "./components/navBar";
 import { Route, Navigate, Routes } from "react-router-dom";
 import Home from "./components/home";
@@ -12,21 +13,10 @@ import Logout from "./components/login/logout";
 import api from "./api/fake.api/users.api";
 import UserPage from "./components/userPage";
 import User from "./components/user";
-
-// export const UserContext = createContext();
+import axios from "axios";
+import { setAuthToken } from "./components/setAuthToken";
 
 function App() {
-  //   const setIsLogged = async (param) => {
-  //     const data = await api.setIsLogged(param);
-  //     return data;
-  //   };
-
-  //   const logged = useState({
-  //     isLogged: api.getIsLogged,
-  //     setIsLogged: setIsLogged,
-  //   });
-
-  //   console.log(setIsLogged(true));
   return (
     <div>
       <NavBar />

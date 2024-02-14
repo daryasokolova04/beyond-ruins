@@ -9,7 +9,6 @@ const TextField = ({ type, label, name, value, onChange, error }) => {
   };
 
   const renderClass = () => {
-    // return "form-control";
     return "form-control" + (error ? " is-invalid" : "");
   };
 

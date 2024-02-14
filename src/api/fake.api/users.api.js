@@ -1,8 +1,7 @@
 const data = [
   {
     id: "1",
-    name: "ivan",
-    surname: "ivanov",
+    login: "ivan_ivanov",
     sex: "Мужской",
     email: "ivan.ivanov@mail.ru",
     password: "123",
@@ -10,8 +9,7 @@ const data = [
   },
   {
     id: "2",
-    name: "kate",
-    surname: "sidorova",
+    login: "kate_sidorova",
     sex: "Женский",
     email: "kate@kate.com",
     password: "456",

@@ -8,7 +8,7 @@ const SelectCategories = ({ defaultValue, label, onChange, options, name }) => {
     console.log(target.name, target.value);
     onChange({ name: target.name, value: target.value });
   };
-  console.log(options);
+  //   console.log(options);
 
   return (
     <div className="mb-4">

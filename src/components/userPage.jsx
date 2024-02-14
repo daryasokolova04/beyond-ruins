@@ -1,28 +1,34 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../api/fake.api/users.api";
 import { useState } from "react";
 import { useEffect } from "react";
 import PostCard from "./postCard";
+import axios from "axios";
+import { refreshToken } from "../services/refresh";
 
 const UserPage = ({ userId }) => {
+  console.log(userId);
   const [user, setUser] = useState();
-  const [posts, setPosts] = useState();
-  const [isLogged, setIsLogged] = useState();
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    console.log(userId);
-    api.getUserById(userId).then((data) => {
-      setUser(data);
-    }, []);
-    api.fetchAllPosts().then((data) => setPosts(data));
+    try {
+      axios
+        .get(`http://127.0.0.1:8000/api/v1/User/${userId}/`)
+        .then((data) => setUser(data.data));
+    } catch (error) {
+      console.log(error);
+    }
   }, []);
 
-  //   const userId = isLogged;
+  console.log(user);
+  console.log(axios.defaults);
 
   useEffect(() => {
     let isMounted = true;
-    api.getIsLogged().then((data) => setIsLogged(data));
+    axios
+      .get(`http://127.0.0.1:8000/api/v1/User/${userId}/post/`)
+      .then((data) => setPosts(data.data || null));
     return () => {
       isMounted = false;
     };
@@ -38,28 +44,29 @@ const UserPage = ({ userId }) => {
     navigate(`/home/${user.id}/posts`, { replace: true });
   };
 
-  return posts && user ? (
+  return user ? (
     <div className="m-4 p-4">
-      <div className="m-4">
-        <h1>Мои посты</h1>
-        <h5>{user.name + " " + user.surname}</h5>
+      <div className="shadow m-4 p-4">
+        <h1 className="title">My posts</h1>
+        <h5>{user.username}</h5>
 
-        {posts.map((post) => {
-          if (post.userId === userId) {
-            console.log(post);
-            return (
-              <div key={post.id} className="card">
-                <PostCard postId={post.id} />
-              </div>
-            );
-          }
-        })}
-        <button onClick={handleClick} className="btn btn-primary mt-2 mb-2 m-2">
+        {posts &&
+          Object.keys(posts).map((postId) => (
+            <div key={postId} className="card">
+              <PostCard postId={postId} key={postId} />
+            </div>
+          ))}
+
+        <button
+          onClick={handleClick}
+          className="btn btn-sm btn-outline-dark m-2"
+        >
           Создать пост
         </button>
+
         <button
           onClick={handleComeBack}
-          className="btn btn-primary mt-2 mb-2 m-2"
+          className="btn btn-sm btn-outline-dark m-2"
         >
           Ко всем постам
         </button>

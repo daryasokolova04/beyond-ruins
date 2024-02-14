@@ -1,6 +1,6 @@
 import React from "react";
 
-const TextAreaField = ({ label, name, value, onChange, error }) => {
+const TextAreaField = ({ label, name, value, onChange, error, rows }) => {
   const handleChange = ({ target }) => {
     onChange({ name: target.name, value: target.value });
   };
@@ -19,7 +19,7 @@ const TextAreaField = ({ label, name, value, onChange, error }) => {
         defaultValue={value}
         className={renderClass()}
         id="textArea"
-        rows="5"
+        rows={rows}
         onChange={handleChange}
       ></textarea>
       {error && <div className="invalid-feedback">{error}</div>}

@@ -10,7 +10,10 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #e8e8ea;
 }
+/* #e8e8ea */
+/* #dee5e8 */
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
@@ -18,18 +21,52 @@ code {
 }
 
 .navbar {
-  background: rgb(255, 255, 255);
+  background: #e8e8ea;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 2;
+  margin: 0;
 }
 
 a {
   color: black;
 }
 
-.title h1 {
-  text-align: ;
+a:hover {
+  font-size: 17px;
+}
+
+.title {
+  text-align: center;
+  margin: 4px;
+}
+
+.post-author {
+  font-size: 18px;
+}
+
+.card {
+  background-color: #eff0f2;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="checkbox"],
+textarea {
+  background-color: #fff;
+}
+/* eff0f2 */
+
+/* button:hover {
+  background-color: #938d73;
+  border: none;
+} */
+/* eff0f2 */
+
+@media (max-width: 890px) {
+  .main-page {
+    display: none;
+  }
 }

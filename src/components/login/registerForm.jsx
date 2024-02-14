@@ -16,30 +16,20 @@ const RegisterForm = () => {
   const [isLogged, setIsLogged] = useState();
   const navigate = useNavigate();
   const [data, setData] = useState({
-    id: id,
-    name: "",
-    surname: "",
+    login: "",
     sex: "Мужской",
-    email: "",
+    email: "email@email.com",
     password: "",
-    license: false,
+    license: true,
   });
   const [errors, setErrors] = useState({});
-
-  const handleLogin = (id) => {
-    api.data.setIsLogged(id).then((data) => console.log(data));
-  };
-  console.log(isLogged);
 
   const validatorConfig = {
     email: {
       isRequired: { message: "Email обязателен для заполнения" },
       isEmail: { message: "Email введен некорректно" },
     },
-    name: {
-      isRequired: { message: "Поле обязательно для заполнения" },
-    },
-    surname: {
+    login: {
       isRequired: { message: "Поле обязательно для заполнения" },
     },
     password: {
@@ -75,7 +65,6 @@ const RegisterForm = () => {
   const isValid = Object.keys(errors).length === 0;
 
   const handleChange = (target) => {
-    // console.log(target);
     console.log(errors);
     setData((prevState) => ({
       ...prevState,
@@ -84,17 +73,23 @@ const RegisterForm = () => {
   };
   const handleClick = () => {
     console.log(isLogged);
-    // axios
-    //   .post("http://127.0.0.1:8000/api/v1/User/", {
-    //     login: "login",
-    //     email: "email@email.ru",
-    //   })
-    //   .then((data) => console.log(data));
-    api.data.addUser(data).then(() => {
-      navigate(`/profile/${data.id}`, { replace: true });
-      handleLogin(data.id);
-      document.location.reload();
-    });
+    console.log(data);
+
+    try {
+      axios
+        .post("http://127.0.0.1:8000/api/v1/auth/users/", {
+          username: data.login,
+          password: data.password,
+          email: data.email,
+        })
+        .then((data) => console.log(data))
+        .catch((error) => console.log(error));
+    } catch (error) {
+      console.log(error);
+    }
+
+    navigate(`/login`, { replace: true });
+    document.location.reload();
   };
 
   return (
@@ -105,20 +100,11 @@ const RegisterForm = () => {
             <h1>Register Form</h1>
             <TextField
               type="text"
-              label="Имя"
-              name="name"
-              value={data.name}
+              label="Логин"
+              name="login"
+              value={data.login}
               onChange={handleChange}
-              error={errors.name}
-            />
-
-            <TextField
-              type="text"
-              label="Фамилия"
-              name="surname"
-              value={data.surname}
-              onChange={handleChange}
-              error={errors.surname}
+              error={errors.login}
             />
 
             <RadioField
@@ -162,7 +148,7 @@ const RegisterForm = () => {
             <button
               onClick={handleClick}
               type="submit"
-              className="btn btn-primary mt-2 mb-2"
+              className="btn m-2 btn-outline-dark btn-sm"
               disabled={!isValid}
             >
               Sign up

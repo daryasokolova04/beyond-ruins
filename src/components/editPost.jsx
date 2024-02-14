@@ -5,24 +5,23 @@ import TextAreaField from "./fields/textAreaField";
 import { useNavigate } from "react-router-dom";
 import SelectCategories from "./selectCategories";
 import { validator } from "../utils/validator";
+import axios from "axios";
+import { setAuthToken } from "./setAuthToken";
+import { refreshToken } from "../services/refresh";
 
 const EditPost = ({ id }) => {
-  const [post, setPost] = useState({
-    id: id,
-    userId: "",
-    categoryId: "",
-    title: "",
-    text: "",
-  });
+  const [post, setPost] = useState();
   const [categories, setCategories] = useState();
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
     let isMounted = true;
-    api.getPostById(id).then((data) => {
-      setPost(data);
-    });
+    axios
+      .get(`http://127.0.0.1:8000/api/v1/Posts/${id}/`)
+      .then((data) => setPost(data.data))
+      .catch((error) => console.log(error));
+
     return () => {
       isMounted = false;
     };
@@ -30,9 +29,12 @@ const EditPost = ({ id }) => {
 
   useEffect(() => {
     let isMounted = true;
-    api.fetchAllCategories().then((data) => {
-      setCategories(data);
-    });
+
+    axios
+      .get("http://127.0.0.1:8000/api/v1/categories/")
+      .then((data) => setCategories(data.data))
+      .catch((err) => console.log(err));
+
     return () => {
       isMounted = false;
     };
@@ -46,9 +48,19 @@ const EditPost = ({ id }) => {
   };
 
   const handleClick = () => {
-    api
-      .update(id, post)
-      .then(() => navigate(`/home/${post.userId}`, { replace: true }));
+    refreshToken();
+    console.log(axios.defaults);
+    console.log(id);
+    axios
+      .put(`http://127.0.0.1:8000/api/v1/Posts/${id}/`, {
+        id: post.id,
+        userId: post.userId,
+        title: post.title,
+        text: post.text,
+        categoryId: post.categoryId,
+      })
+      .catch((error) => console.log(error));
+    navigate(`/home/${post.userId}`, { replace: true });
   };
 
   const validate = () => {
@@ -73,8 +85,8 @@ const EditPost = ({ id }) => {
   };
 
   return post && categories ? (
-    <div className="m-4">
-      <div className="shadow p-4">
+    <div className="m-4 p-4">
+      <div className="shadow p-4 m-4">
         <h1>Редактирование поста</h1>
         <TextField
           type="text"
@@ -101,7 +113,7 @@ const EditPost = ({ id }) => {
         <button
           onClick={handleClick}
           type="submit"
-          className="btn btn-primary mt-2 mb-2"
+          className="btn btn-sm btn-outline-dark m-2"
           disabled={!isValid}
         >
           Сохранить изменения

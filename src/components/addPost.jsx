@@ -8,12 +8,14 @@ import { useNavigate } from "react-router-dom";
 import SelectCategories from "./selectCategories";
 import axios from "axios";
 import { validator } from "../utils/validator";
+import { setAuthToken } from "./setAuthToken";
+import inMemoryJWT from "../services/inMemoryJWT";
+import { refreshToken } from "../services/refresh";
 
-const AddPost = ({ postId, userId }) => {
+const AddPost = ({ userId }) => {
   const [post, setPost] = useState({
-    id: postId,
     userId: userId,
-    categoryId: "type1",
+    categoryId: 1,
     title: "",
     text: "",
   });
@@ -21,11 +23,18 @@ const AddPost = ({ postId, userId }) => {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
+  console.log(axios.defaults.headers.common);
+
   useEffect(() => {
     let isMounted = true;
-    api.fetchAllCategories().then((data) => {
-      setCategories(data);
-    });
+
+    try {
+      axios
+        .get("http://127.0.0.1:8000/api/v1/categories/")
+        .then((data) => setCategories(data.data));
+    } catch (error) {
+      console.log(error);
+    }
     return () => {
       isMounted = false;
     };
@@ -36,19 +45,20 @@ const AddPost = ({ postId, userId }) => {
       ...prevState,
       [target.name]: target.value,
     }));
+    console.log(post);
   };
 
   const handleClick = () => {
-    // axios
-    //   .post("http://127.0.0.1:8000/api/v1/Article/", {
-    //     id: 2,
-    //     title: "Россия",
-    //     main_text: "о России",
-    //     user_id: 1,
-    //     category_id: 1,
-    //   })
-    //   .then((data) => console.log(data));
-    api.addPost(post);
+    refreshToken();
+    console.log(axios.defaults.headers);
+    axios
+      .post("http://127.0.0.1:8000/api/v1/Posts/", {
+        userId: post.userId,
+        categoryId: post.categoryId,
+        title: post.title,
+        text: post.text,
+      })
+      .catch((err) => console.log(err));
     navigate(`/home/${userId}`, { replace: true });
   };
 
@@ -73,11 +83,9 @@ const AddPost = ({ postId, userId }) => {
     },
   };
 
-  console.log(categories);
-
   return categories ? (
-    <div className="m-4">
-      <div className="shadow p-4">
+    <div className="m-4 p-4">
+      <div className="shadow m-4 p-4">
         <h1>Создание поста</h1>
         <TextField
           type="text"
@@ -100,12 +108,13 @@ const AddPost = ({ postId, userId }) => {
           value={post.text}
           onChange={handleChange}
           error={errors.text}
+          rows={7}
         />
         <button
           onClick={handleClick}
           type="submit"
-          className="btn btn-primary mt-2 mb-2"
-          //   disabled={!isValid}
+          className="btn btn-sm btn-outline-dark m-2"
+          disabled={!isValid}
         >
           Опубликовать
         </button>

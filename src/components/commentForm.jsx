@@ -1,12 +1,12 @@
 import React from "react";
 import TextAreaField from "./fields/textAreaField";
 import { useState } from "react";
-import api from "../api/fake.api/users.api";
 import axios from "axios";
+import { refreshToken } from "../services/refresh";
 
-const CommentForm = ({ commentId, postId, userId }) => {
+const CommentForm = ({ postId, userId }) => {
+  console.log(userId);
   const [comment, setComment] = useState({
-    commentId: commentId,
     postId: postId,
     userId: userId,
     commentText: "",
@@ -20,10 +20,16 @@ const CommentForm = ({ commentId, postId, userId }) => {
   };
 
   const handleClick = () => {
-    console.log(comment);
+    refreshToken();
+    console.log(axios.defaults.headers);
+    axios
+      .post("http://127.0.0.1:8000/api/v1/comments/", {
+        postId: postId,
+        userId: userId,
+        commentText: comment.commentText,
+      })
+      .catch((err) => console.log(err));
     document.location.reload();
-    axios.post("http://127.0.0.1:8000/api/v1/Comments/");
-    api.addComment(comment);
   };
 
   return (
@@ -33,11 +39,12 @@ const CommentForm = ({ commentId, postId, userId }) => {
         name="commentText"
         value={comment.commentText}
         onChange={handleChange}
+        rows={2}
       />
       <button
         onClick={handleClick}
         type="button"
-        className="btn btn-primary mt-2 mb-2"
+        className="btn m-2 btn-sm btn-outline-dark"
       >
         Опубликовать
       </button>

@@ -4,26 +4,30 @@ import PostCard from "./postCard";
 import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
 import CommentForm from "./commentForm";
 import backgroundImage from "../images/background.av1.avif";
 
 const PostsPage = () => {
-  const [isLogged, setIsLogged] = useState();
+  const loggedUser = +localStorage.getItem("id");
   const [users, setUsers] = useState([]);
   const [posts, setPosts] = useState([]);
 
-  const [articles, setArticles] = useState({});
+  console.log(loggedUser, users);
+
   useEffect(() => {
     let isMounted = true;
 
-    // axios
-    //   .get("http://127.0.0.1:8000/api/v1/Article/1/")
-    //   .then((data) => setArticles(data.data));
+    if (isMounted) {
+      try {
+        axios
+          .get("http://127.0.0.1:8000/api/v1/Posts/")
+          .then((data) => setPosts(data.data));
 
-    api.data.fetchAllPosts().then((data) => {
-      if (isMounted) setPosts(data);
-    });
+        console.log(posts);
+      } catch (error) {
+        console.log(error);
+      }
+    }
     return () => {
       isMounted = false;
     };
@@ -31,78 +35,60 @@ const PostsPage = () => {
 
   useEffect(() => {
     let isMounted = true;
-    api.data.fetchAllUsers().then((data) => {
-      if (isMounted) setUsers(data);
-    });
+
+    try {
+      axios
+        .get("http://127.0.0.1:8000/api/v1/User/")
+        .then((data) => setUsers(data.data));
+      console.log(users);
+    } catch (error) {
+      console.log(error);
+    }
     return () => {
       isMounted = false;
     };
   }, []);
 
-  useEffect(() => {
-    let isMounted = true;
-    api.data.getIsLogged().then((data) => setIsLogged(data));
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  const getComments = (comment) => {
-    const user = users.find((user) => user.id === comment.userId);
-    return (
-      <div key={comment.commentId} className="m-2">
-        <p>{user.name + " " + user.surname}</p>s<p>{comment.commentText}</p>
-      </div>
-    );
-  };
-
-  console.log(articles);
-  return users && posts ? (
+  return users ? (
     <div className="m-4 p-4">
       <div className="shadow m-4 p-4">
-        {/* <div
+        <div
+          className="main-page"
           style={{
             backgroundImage: `url(${backgroundImage}`,
             backgroundRepeat: "no-repeat",
             backgroundSize: "contain",
-            height: 700,
+            height: 500,
             width: 700,
             margin: "auto",
           }}
         >
           <div className="title justify-content-center">
-            <h1>Beyoud Ruins</h1>
+            <h1 className="pt-4">Beyond Ruins</h1>
           </div>
-        </div> */}
+        </div>
         <div>
-          <h1 className="m-4 text-center">Posts</h1>
+          <h1 className="text-center">Posts</h1>
+
           {users.map((user) => {
             return (
-              posts.find((post) => post.userId === user.id) &&
-              user.id !== isLogged && (
+              user.id !== loggedUser &&
+              posts.find((post) => post.userId === user.id) && (
                 <div key={user.id} className="m-4 p-2 card">
-                  <h6>{user.name + " " + user.surname}</h6>
-                  {posts.map((post) => {
-                    if (post.userId === user.id) {
-                      return (
-                        post && (
-                          <>
-                            <div key={post.id}>
-                              <PostCard postId={post.id} />
-                              {isLogged && (
-                                <CommentForm
-                                  commentId={uuidv4()}
-                                  postId={post.id}
-                                  userId={isLogged}
-                                />
-                              )}
-                            </div>
-                            <br />
-                          </>
-                        )
-                      );
-                    }
-                  })}
+                  <span className="post-author">
+                    <i className="bi bi-suitcase-lg">{" " + user.username}</i>
+                  </span>
+                  {posts.map(
+                    (post) =>
+                      post.userId === user.id && (
+                        <div key={post.id}>
+                          <PostCard postId={post.id} />
+                          {localStorage.getItem("id") && (
+                            <CommentForm postId={post.id} userId={loggedUser} />
+                          )}
+                        </div>
+                      )
+                  )}
                 </div>
               )
             );
