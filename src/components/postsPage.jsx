@@ -1,18 +1,16 @@
-import React, { useContext } from "react";
-import api from "../api";
+import React from "react";
 import PostCard from "./postCard";
 import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import CommentForm from "./commentForm";
 import backgroundImage from "../images/background.av1.avif";
+import { refreshToken } from "../services/refresh";
 
 const PostsPage = () => {
   const loggedUser = +localStorage.getItem("id");
   const [users, setUsers] = useState([]);
   const [posts, setPosts] = useState([]);
-
-  console.log(loggedUser, users);
 
   useEffect(() => {
     let isMounted = true;
@@ -42,7 +40,7 @@ const PostsPage = () => {
         .then((data) => setUsers(data.data));
       console.log(users);
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data);
     }
     return () => {
       isMounted = false;
@@ -68,7 +66,7 @@ const PostsPage = () => {
           </div>
         </div>
         <div>
-          <h1 className="text-center">Posts</h1>
+          <h1 className="text-center">Посты</h1>
 
           {users.map((user) => {
             return (

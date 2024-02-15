@@ -1,14 +1,10 @@
 import React from "react";
-import { useEffect } from "react";
-import api from "../api/fake.api/users.api";
-import { useState } from "react";
 
 const SelectCategories = ({ defaultValue, label, onChange, options, name }) => {
   const handleChange = ({ target }) => {
     console.log(target.name, target.value);
     onChange({ name: target.name, value: target.value });
   };
-  //   console.log(options);
 
   return (
     <div className="mb-4">

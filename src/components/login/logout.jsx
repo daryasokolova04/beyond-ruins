@@ -1,8 +1,6 @@
-import React, { useContext, useState } from "react";
-import { UserContext } from "../../App";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
-import inMemoryJWT from "../../services/inMemoryJWT";
 import axios from "axios";
 import { abortRefeshToken } from "../../services/refresh";
 
@@ -21,12 +19,11 @@ const Logout = () => {
       .post("http://127.0.0.1:8000/api/v1/token/blacklist/", {
         refresh: refreshToken,
       })
-      .then(() => inMemoryJWT.deleteToken)
-      .catch((error) => console.log(error));
+      .then(() => abortRefeshToken())
+      .catch((error) => console.log(error.response.data));
     localStorage.removeItem("refresh");
     localStorage.removeItem("id");
     localStorage.removeItem("access");
-    abortRefeshToken();
 
     handleLogout();
     navigate("/posts", { replace: true });

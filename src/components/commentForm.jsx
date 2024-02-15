@@ -28,7 +28,7 @@ const CommentForm = ({ postId, userId }) => {
         userId: userId,
         commentText: comment.commentText,
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err.response.data));
     document.location.reload();
   };
 

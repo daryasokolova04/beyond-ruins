@@ -1,26 +1,22 @@
-import React, { useContext } from "react";
+import React from "react";
 import TextField from "../fields/textField";
 import RadioField from "../fields/radioField";
 import { useState } from "react";
 import CheckBoxField from "../fields/checkBoxField";
-import api from "../../api/index";
 import { validator } from "../../utils/validator";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { UserContext } from "../../App";
-import { v4 as uuidv4 } from "uuid";
 
 const RegisterForm = () => {
-  const id = uuidv4();
   const [isLogged, setIsLogged] = useState();
   const navigate = useNavigate();
   const [data, setData] = useState({
     login: "",
     sex: "Мужской",
-    email: "email@email.com",
+    email: "",
     password: "",
-    license: true,
+    license: false,
   });
   const [errors, setErrors] = useState({});
 
@@ -75,18 +71,14 @@ const RegisterForm = () => {
     console.log(isLogged);
     console.log(data);
 
-    try {
-      axios
-        .post("http://127.0.0.1:8000/api/v1/auth/users/", {
-          username: data.login,
-          password: data.password,
-          email: data.email,
-        })
-        .then((data) => console.log(data))
-        .catch((error) => console.log(error));
-    } catch (error) {
-      console.log(error);
-    }
+    axios
+      .post("http://127.0.0.1:8000/api/v1/auth/users/", {
+        username: data.login,
+        password: data.password,
+        email: data.email,
+      })
+      .then((data) => console.log(data))
+      .catch((error) => console.log(error.response.data));
 
     navigate(`/login`, { replace: true });
     document.location.reload();
@@ -97,7 +89,7 @@ const RegisterForm = () => {
       <div className="m-4 p-4">
         <div className="shadow m-4 p-4">
           <div className="g-3">
-            <h1>Register Form</h1>
+            <h1>Форма регистрации</h1>
             <TextField
               type="text"
               label="Логин"

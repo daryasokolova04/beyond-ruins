@@ -1,9 +1,6 @@
-import React, { useEffect, useState, useContext } from "react";
-import api from "../api/fake.api/users.api";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CommentForm from "./commentForm";
 import axios from "axios";
-import { setAuthToken } from "./setAuthToken";
 import { refreshToken } from "../services/refresh";
 
 const PostCard = ({ postId }) => {
@@ -89,10 +86,11 @@ const PostCard = ({ postId }) => {
     console.log(axios.defaults.headers);
     axios
       .delete(`http://127.0.0.1:8000/api/v1/Posts/${id}/`)
-      .then((response) => console.log(response.data))
-      .catch((err) => console.log(err));
-
-    document.location.reload();
+      .then((response) => {
+        document.location.reload();
+        console.log(response.data);
+      })
+      .catch((err) => console.log(err.response));
   };
 
   const handleCommentDelete = (id) => {
@@ -100,10 +98,11 @@ const PostCard = ({ postId }) => {
     console.log(axios.defaults.headers);
     axios
       .delete(`http://127.0.0.1:8000/api/v1/comments/${id}/`)
-      .then((response) => console.log(response.data))
-      .catch((err) => console.log(err));
-
-    document.location.reload();
+      .then((response) => {
+        document.location.reload();
+        console.log(response.data);
+      })
+      .catch((err) => console.log(err.response.data));
   };
 
   return post && category ? (

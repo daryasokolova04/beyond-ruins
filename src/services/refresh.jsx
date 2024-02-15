@@ -21,11 +21,11 @@ const refresh = (refreshToken) => {
         console.log(axios.defaults.headers.common);
       })
       .catch((err) => console.log(err));
-  }, 10000);
+  }, 1000 * 60);
 };
 
 export const refreshToken = () => {
-  let accessToken = localStorage.getItem("access");
+  const accessToken = localStorage.getItem("access");
   const refreshToken = localStorage.getItem("refresh");
   axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
   return refresh(refreshToken);

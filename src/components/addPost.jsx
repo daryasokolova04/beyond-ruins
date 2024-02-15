@@ -3,13 +3,10 @@ import TextField from "./fields/textField";
 import { useState } from "react";
 import TextAreaField from "./fields/textAreaField";
 import { useEffect } from "react";
-import api from "../api/fake.api/users.api";
 import { useNavigate } from "react-router-dom";
 import SelectCategories from "./selectCategories";
 import axios from "axios";
 import { validator } from "../utils/validator";
-import { setAuthToken } from "./setAuthToken";
-import inMemoryJWT from "../services/inMemoryJWT";
 import { refreshToken } from "../services/refresh";
 
 const AddPost = ({ userId }) => {
@@ -26,6 +23,7 @@ const AddPost = ({ userId }) => {
   console.log(axios.defaults.headers.common);
 
   useEffect(() => {
+    refreshToken();
     let isMounted = true;
 
     try {
@@ -33,7 +31,7 @@ const AddPost = ({ userId }) => {
         .get("http://127.0.0.1:8000/api/v1/categories/")
         .then((data) => setCategories(data.data));
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data);
     }
     return () => {
       isMounted = false;
@@ -58,8 +56,9 @@ const AddPost = ({ userId }) => {
         title: post.title,
         text: post.text,
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err.response.data));
     navigate(`/home/${userId}`, { replace: true });
+    document.location.reload();
   };
 
   const validate = () => {

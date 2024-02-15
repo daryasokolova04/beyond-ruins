@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import api from "../api";
-import axios from "axios";
 
 const NavBar = () => {
   const [id, setId] = useState();
@@ -16,19 +14,19 @@ const NavBar = () => {
         <ul className="nav">
           <li className="nav-item">
             <Link className="nav-link link-dark" to="/posts">
-              home
+              Посты
             </Link>
           </li>
 
           <li className="nav-item">
             <Link className="nav-link link-dark" to="/register">
-              register
+              Регистрация
             </Link>
           </li>
 
           <li className="nav-item">
             <Link className="nav-link link-dark" to="/login">
-              login
+              Войти
             </Link>
           </li>
         </ul>
@@ -39,18 +37,18 @@ const NavBar = () => {
       <ul className="nav">
         <li className="nav-item">
           <Link className="nav-link link-dark" to="/posts">
-            posts
+            Посты
           </Link>
         </li>
         <li className="nav-item">
           <Link className="nav-link link-dark" to={`/profile/${id}`}>
-            profile
+            Профиль
           </Link>
         </li>
 
         <li className="nav-item">
           <Link className="nav-link link-dark" to="/logout">
-            log out
+            Выйти
           </Link>
         </li>
       </ul>

@@ -1,29 +1,17 @@
-import React, { useEffect } from "react";
+import React from "react";
 import TextField from "../fields/textField";
-import api from "../../api/index";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { setAuthToken } from "../setAuthToken";
-import inMemoryJWT from "../../services/inMemoryJWT";
 import { refreshToken } from "../../services/refresh";
 
 const LoginForm = () => {
   const navigate = useNavigate();
   const [isLogged, setIsLogged] = useState();
-  const [users, setUsers] = useState();
   const [data, setData] = useState({
     login: "",
     password: "",
   });
-
-  useEffect(() => {
-    let isMounted = true;
-    api.data.getIsLogged().then((data) => setIsLogged(data));
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   const handleChange = (target) => {
     setData((prevState) => ({
@@ -38,7 +26,6 @@ const LoginForm = () => {
     let id = null;
 
     try {
-      // Kskjfkm42
       const response = await axios.post(
         "http://127.0.0.1:8000/api/v1/token/",
         {
@@ -63,7 +50,7 @@ const LoginForm = () => {
       id = user.data;
       localStorage.setItem("id", id);
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data);
     }
 
     if (id) {
@@ -80,7 +67,7 @@ const LoginForm = () => {
       <div className="m-4 p-4">
         <section className="shadow m-4 p-4">
           <form className="g-3" onSubmit={handleSubmit}>
-            <h1>Login Form</h1>
+            <h1>Войти</h1>
             <TextField
               type="text"
               label="Логин"

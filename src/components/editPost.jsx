@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import api from "../api/fake.api/users.api";
 import TextField from "./fields/textField";
 import TextAreaField from "./fields/textAreaField";
 import { useNavigate } from "react-router-dom";
 import SelectCategories from "./selectCategories";
 import { validator } from "../utils/validator";
 import axios from "axios";
-import { setAuthToken } from "./setAuthToken";
 import { refreshToken } from "../services/refresh";
 
 const EditPost = ({ id }) => {
@@ -20,7 +18,7 @@ const EditPost = ({ id }) => {
     axios
       .get(`http://127.0.0.1:8000/api/v1/Posts/${id}/`)
       .then((data) => setPost(data.data))
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error.response.data));
 
     return () => {
       isMounted = false;
@@ -33,7 +31,7 @@ const EditPost = ({ id }) => {
     axios
       .get("http://127.0.0.1:8000/api/v1/categories/")
       .then((data) => setCategories(data.data))
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err.response.data));
 
     return () => {
       isMounted = false;
@@ -59,7 +57,7 @@ const EditPost = ({ id }) => {
         text: post.text,
         categoryId: post.categoryId,
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error.response.data));
     navigate(`/home/${post.userId}`, { replace: true });
   };
 

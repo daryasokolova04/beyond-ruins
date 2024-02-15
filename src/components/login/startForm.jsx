@@ -10,7 +10,6 @@ const StartForm = () => {
   const type = useParams().type;
   const navigate = useNavigate();
   const [formType, setFormType] = useState(type);
-  console.log(formType);
 
   const toggleFormType = () => {
     setFormType((prevState) =>
