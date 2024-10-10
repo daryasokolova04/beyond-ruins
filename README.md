@@ -2,15 +2,13 @@
 Сайт создан для путешественников для обмена опытом, ценными рекомендациями, рецензиями на посещенные ими места и общения.
 Пользователи могут создавать, редактировать и удалять посты, выбирать для них подходящую категорию, создавать и удалять комментарии под чужими постами.
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/e11e1bb7-7d9e-43f6-9b60-30d79b2cdf42" alt="главная" width="800"/>
-</p>
+![главная](https://github.com/user-attachments/assets/e11e1bb7-7d9e-43f6-9b60-30d79b2cdf42)
 
 ## Содержание  
-- [Технологии](#технологии) 
-- [Установка](#установка) 
-- [Использование](#использование) 
-- [Внешний вид](#скриншоты)
+- [Технологии](#технологии)
+- [Функциональность](#функциональность) 
+- [Установка и запуск](#установка-и-запуск) 
+- [Внешний вид](#внешний-вид)
 
 ## Технологии  
 - React
@@ -33,15 +31,9 @@
 
 
 ## Внешний вид
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/ff85476d-ba64-45fe-9701-5ec8e3725571" alt="авторизация" width="800"/>
-</p>
+![авторизация](https://github.com/user-attachments/assets/ff85476d-ba64-45fe-9701-5ec8e3725571)
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/22b41d9f-0b42-48da-9bef-c971e69239d4" alt="создание поста" width="800"/>
-</p>
+![создание поста](https://github.com/user-attachments/assets/22b41d9f-0b42-48da-9bef-c971e69239d4)
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/5f53a930-7c6c-4314-ab72-78b3baeba5bf" alt="все посты" width="800"/>
-</p>
+![все посты](https://github.com/user-attachments/assets/5f53a930-7c6c-4314-ab72-78b3baeba5bf)
 
