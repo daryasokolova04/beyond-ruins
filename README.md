@@ -12,7 +12,7 @@
 
 ## Технологии  
 - React
-- React Router
+- React Router DOM
 - Axios
 - CSS
 - HTML
