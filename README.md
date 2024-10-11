@@ -2,7 +2,9 @@
 Сайт создан в целях учебной практики. Предназначен для путешественников для обмена опытом, ценными рекомендациями, рецензиями на посещенные ими места и общения.
 Пользователи могут создавать, редактировать и удалять посты, выбирать для них подходящую категорию, создавать и удалять комментарии под чужими постами.
 
-![главная](https://github.com/user-attachments/assets/e11e1bb7-7d9e-43f6-9b60-30d79b2cdf42)
+![главная](https://github.com/user-attachments/assets/7ecc7967-0df9-4c5c-b834-6a4fb10d91ea)
+
+
 
 ## Содержание  
 - [Технологии](#технологии)
@@ -31,9 +33,13 @@
 
 
 ## Внешний вид
-![авторизация](https://github.com/user-attachments/assets/ff85476d-ba64-45fe-9701-5ec8e3725571)
+![авторизация](https://github.com/user-attachments/assets/144cfcb7-99eb-42f7-9d66-4d340e295982)
 
-![создание поста](https://github.com/user-attachments/assets/22b41d9f-0b42-48da-9bef-c971e69239d4)
+![создание поста](https://github.com/user-attachments/assets/5925b8b9-b9d5-4c28-a085-e69d2febeed3)
 
-![все посты](https://github.com/user-attachments/assets/5f53a930-7c6c-4314-ab72-78b3baeba5bf)
+![посты](https://github.com/user-attachments/assets/2f46ca82-1927-459f-8fc5-e134176c63d2)
+
+![мои публикации](https://github.com/user-attachments/assets/eb3227bc-6d13-45ea-b0b8-662cb5c4c23c)
+
+
 
